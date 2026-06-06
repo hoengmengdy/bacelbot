@@ -1,14 +1,14 @@
+require("dotenv").config();
 const TelegramBot = require("node-telegram-bot-api");
 
-const TOKEN = "8847402921:AAEAgtPxLEAOtq2hTRFqcTH03A2DrRc-f6c";
+const TOKEN = process.env.BOT_TOKEN;
 
 const bot = new TelegramBot(TOKEN, {
     polling: true
 });
 
-// START
+// ================= START =================
 bot.onText(/\/start/, (msg) => {
-
     bot.sendMessage(
         msg.chat.id,
         `🎓 សូមស្វាគមន៍!
@@ -30,188 +30,76 @@ bot.onText(/\/start/, (msg) => {
             }
         }
     );
-
 });
 
-// HELP
+// ================= HELP =================
 bot.onText(/\/help/, (msg) => {
-
-    bot.sendMessage(
-        msg.chat.id,
+    bot.sendMessage(msg.chat.id,
         `📚 របៀបប្រើប្រាស់
 
-1️⃣ វាយ /start
-2️⃣ ជ្រើសរើសមុខវិជ្ជា
-3️⃣ ទទួល PDF វិញ្ញាសារ
-
-Commands:
-▶️ /start
-▶️ /help
-▶️ /clear`
-    );
-
+1️⃣ /start
+2️⃣ ជ្រើសមុខវិជ្ជា
+3️⃣ ទទួល PDF`);
 });
 
-// CLEAR
+// ================= CLEAR =================
 bot.onText(/\/clear/, (msg) => {
-
-    bot.sendMessage(
-        msg.chat.id,
-        "🗑 Menu ត្រូវបានលុប", {
-            reply_markup: {
-                remove_keyboard: true
-            }
-        }
-    );
-
+    bot.sendMessage(msg.chat.id, "🗑 Menu cleared", {
+        reply_markup: { remove_keyboard: true }
+    });
 });
 
-// BUTTON CLICK
+// ================= CALLBACK BUTTONS =================
 bot.on("callback_query", async(query) => {
-
     const chatId = query.message.chat.id;
 
     try {
+        // ⚠️ IMPORTANT FIX: answer immediately
+        await bot.answerCallbackQuery(query.id);
 
         switch (query.data) {
 
             case "history":
-
-                await bot.sendMessage(
-                    chatId,
-                    "📖 កំពុងផ្ញើឯកសារប្រវត្តិវិទ្យា..."
-                );
-
+                await bot.sendMessage(chatId, "📖 Sending History PDFs...");
                 await bot.sendDocument(chatId, "./pdf/World_history.pdf");
-                await bot.sendDocument(chatId, "./pdf/historyKhmer_People's_Republic_of_Cambodia.pdf");
-                await bot.sendDocument(chatId, "./pdf/history(French).pdf");
-                await bot.sendDocument(chatId, "./pdf/history(socialism).pdf");
-                await bot.sendDocument(chatId, "./pdf/history(Republic_of_Cambodia).pdf");
-                await bot.sendDocument(chatId, "./pdf/historyKhmer_Rouge.pdf");
-                await bot.sendDocument(chatId, "./pdf/history_of_the_Kingdom_of_Cambodia_2nd.pdf");
-                await bot.sendDocument(chatId, "./pdf/History,science,social_studies,and_science.pdf");
-
+                await bot.sendDocument(chatId, "./pdf/historyKhmer.pdf");
                 break;
 
             case "math":
-
-                await bot.sendMessage(
-                    chatId,
-                    "➗ កំពុងផ្ញើវិញ្ញាសារគណិតវិទ្យា..."
-                );
-
-                await bot.sendDocument(
-                    chatId,
-                    "./pdf/Math.pdf", {
-                        caption: "➗ គណិតវិទ្យា"
-                    }
-                );
-
-                await bot.sendDocument(
-                    chatId,
-                    "./pdf/200_វិញ្ញាសាគណិតវិទ្យា_អ៊ី_សំអាត.pdf", {
-                        caption: "➗ 200 វិញ្ញាសាគណិតវិទ្យា"
-                    }
-                );
-
+                await bot.sendMessage(chatId, "➗ Sending Math PDFs...");
+                await bot.sendDocument(chatId, "./pdf/Math.pdf");
+                await bot.sendDocument(chatId, "./pdf/Math_200_questions.pdf");
                 break;
 
             case "geo":
-
-                await bot.sendMessage(
-                    chatId,
-                    "🌍 មិនទាន់មានឯកសារភូមិវិទ្យា"
-                );
-
+                await bot.sendMessage(chatId, "🌍 Geography coming soon...");
                 break;
 
             case "chem":
-
-                await bot.sendMessage(
-                    chatId,
-                    "🧪 កំពុងផ្ញើវិញ្ញាសារគីមីវិទ្យា..."
-                );
-
-                await bot.sendDocument(chatId, "./pdf/Kimi.pdf");
-                await bot.sendDocument(chatId, "./pdf/Kimi1.pdf");
-                await bot.sendDocument(chatId, "./pdf/Kimi2.pdf");
-                await bot.sendDocument(chatId, "./pdf/Kimi3.pdf");
-                await bot.sendDocument(chatId, "./pdf/Kimi4.pdf");
-                await bot.sendDocument(chatId, "./pdf/Kimi5.pdf");
-                await bot.sendDocument(chatId, "./pdf/Kimi6.pdf");
-
+                await bot.sendMessage(chatId, "🧪 Sending Chemistry PDFs...");
+                await bot.sendDocument(chatId, "./pdf/Chemistry.pdf");
                 break;
 
             case "physics":
-
-                await bot.sendMessage(
-                    chatId,
-                    "⚛️ កំពុងផ្ញើវិញ្ញាសាររូបវិទ្យា..."
-                );
-
-                await bot.sendDocument(
-                    chatId,
-                    "./pdf/Physics_Preparatory_science_subject.pdf", {
-                        caption: "⚛️ រូបវិទ្យា"
-                    }
-                );
-
-                await bot.sendDocument(
-                    chatId,
-                    "./pdf/Physics_12thgrade.pdf"
-                );
-
+                await bot.sendMessage(chatId, "⚛️ Sending Physics PDFs...");
+                await bot.sendDocument(chatId, "./pdf/Physics.pdf");
                 break;
 
             case "biology":
-
-                await bot.sendMessage(
-                    chatId,
-                    "🧑‍🔬 កំពុងផ្ញើវិញ្ញាសារជីវវិទ្យា..."
-                );
-
-                await bot.sendDocument(
-                    chatId,
-                    "./pdf/Biology_formula.pdf"
-                );
-
-                await bot.sendDocument(
-                    chatId,
-                    "./pdf/Biology_Science Preparatory Course.pdf"
-                );
-
+                await bot.sendMessage(chatId, "🧑‍🔬 Sending Biology PDFs...");
+                await bot.sendDocument(chatId, "./pdf/Biology.pdf");
                 break;
 
             case "khmer":
-
-                await bot.sendMessage(
-                    chatId,
-                    "📚 កំពុងផ្ញើវិញ្ញាសារអក្សរសាស្រ្តខ្មែរ..."
-                );
-
-                await bot.sendDocument(
-                    chatId,
-                    "./pdf/Khmer_Literature_Preparatory_Course_for_Science_and_Social_Studies.pdf", {
-                        caption: "📚 អក្សរសាស្រ្តខ្មែរ"
-                    }
-                );
-
+                await bot.sendMessage(chatId, "📚 Sending Khmer PDFs...");
+                await bot.sendDocument(chatId, "./pdf/Khmer_Literature.pdf");
                 break;
         }
 
-        await bot.answerCallbackQuery(query.id);
-
     } catch (err) {
-
         console.error(err);
-
-        bot.sendMessage(
-            chatId,
-            "❌ រកមិនឃើញឯកសារ PDF\n\n" + err.message
-        );
-
+        bot.sendMessage(chatId, "❌ Error: " + err.message);
     }
-
 });
 
-console.log("✅ Bot Running...");
+console.log("✅ Bot is running...");
